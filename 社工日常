@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專業社工與跨部門管理人才 - 個人履歷</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        accent: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-pattern {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 28px 28px;
+        }
+        .dark .hero-pattern {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(34, 197, 94, 0.12) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(#1e293b 1px, transparent 1px);
+        }
+        .blob-shape {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morph 8s ease-in-out infinite alternate;
+        }
+        @keyframes morph {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            100% { border-radius: 70% 30% 32% 68% / 40% 60% 40% 60%; }
+        }
+        .float-animation {
+            animation: floating 4s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .music-wave span {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background-color: currentColor;
+            margin: 0 1px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        .music-wave span:nth-child(2) { animation-delay: 0.2s; height: 18px; }
+        .music-wave span:nth-child(3) { animation-delay: 0.4s; height: 8px; }
+        .music-wave.paused span { animation-play-state: paused; height: 4px !important; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.2); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://img.ai365.fans/artworks/6556d8f6-52f8-4721-858f-ceb37b40a9a2/0p1oazkeq30e.mp4" type="audio/mp4">
+        您的瀏覽器不支援音樂播放元素
+    </audio>
+
+    <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-all shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 font-bold text-lg text-slate-900 dark:text-white group">
+                <span class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-400 text-white flex items-center justify-center shadow-lg shadow-brand-600/25 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-hands-holding-child text-lg"></i>
+                </span>
+                <div class="flex flex-col">
+                    <span class="tracking-tight text-base sm:text-lg">專業社工與管理專員</span>
+                    <span class="text-xs font-medium text-slate-400 dark:text-slate-400 tracking-wider">Social Work & Management</span>
+                </div>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                <a href="#about" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-600 hover:after:w-full after:transition-all">核心摘要</a>
+                <a href="#highlights" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-600 hover:after:w-full after:transition-all">專業條列</a>
+                <a href="#narrative" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-600 hover:after:w-full after:transition-all">敘事自傳</a>
+                <a href="#ecosystem" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-600 hover:after:w-full after:transition-all">協作樞紐</a>
+            </nav>
+
+            <div class="flex items-center gap-2.5">
+                <!-- Social links in header (FB only) -->
+                <div class="hidden lg:flex items-center gap-2 mr-1">
+                    <a href="https://www.facebook.com/?locale=zh_TW" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 transition-all flex items-center justify-center text-sm border border-slate-200 dark:border-slate-700" title="Facebook 連結">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                </div>
+
+                <!-- Music Toggle Button -->
+                <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-slate-700 transition-all text-xs font-semibold border border-slate-200 dark:border-slate-700" title="背景音樂開關">
+                    <span id="musicIconWrapper" class="flex items-center justify-center w-4">
+                        <i id="musicIcon" class="fa-solid fa-volume-xmark"></i>
+                    </span>
+                    <span class="hidden sm:inline" id="musicText">音樂關閉</span>
+                    <div id="musicWave" class="music-wave paused hidden sm:flex">
+                        <span></span><span></span><span></span>
+                    </div>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-slate-700 dark:hover:text-amber-400 transition-all flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm" title="切換深淺色主題">
+                    <i class="fa-solid fa-sun hidden dark:inline text-base"></i>
+                    <i class="fa-solid fa-moon inline dark:hidden text-base"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 space-y-3">
+            <a href="#about" onclick="toggleMobileMenu()" class="block font-medium text-slate-700 dark:text-slate-200 py-1.5">核心摘要</a>
+            <a href="#highlights" onclick="toggleMobileMenu()" class="block font-medium text-slate-700 dark:text-slate-200 py-1.5">專業條列</a>
+            <a href="#narrative" onclick="toggleMobileMenu()" class="block font-medium text-slate-700 dark:text-slate-200 py-1.5">敘事自傳</a>
+            <a href="#ecosystem" onclick="toggleMobileMenu()" class="block font-medium text-slate-700 dark:text-slate-200 py-1.5">協作樞紐</a>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-500">快速聯繫：</span>
+                <div class="flex items-center gap-2">
+                    <a href="https://www.facebook.com/?locale=zh_TW" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-semibold">
+                        <i class="fa-brands fa-facebook-f mr-1"></i> FB
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative hero-pattern py-16 md:py-24 overflow-hidden border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Text Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300 text-xs md:text-sm font-bold tracking-wide border border-brand-200 dark:border-brand-800/60 shadow-sm">
+                        <i class="fa-solid fa-award text-brand-600 dark:text-brand-400"></i> 專業社工師 / 跨部門營運管理人才
+                    </div>
+                    
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                        連結個案心靈與後勤營運的 <span class="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">全方位整合樞紐</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal max-w-2xl mx-auto lg:mx-0">
+                        具備豐富一線社工與跨部門管理經驗。擅長個案深度處遇、志工培力團隊經營，以及廚房後勤與日常營運的高效協調，確保機構助人使命穩健前行。
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#about" class="px-7 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-xl shadow-brand-600/30 transition-all hover:-translate-y-0.5 flex items-center gap-2.5">
+                            <span>探索詳細履歷</span>
+                            <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </a>
+                        <div class="flex items-center gap-2.5">
+                            <a href="https://www.facebook.com/?locale=zh_TW" target="_blank" rel="noopener noreferrer" class="px-4 h-12 rounded-2xl bg-white dark:bg-slate-900 text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2 text-sm font-bold shadow-md border border-slate-200 dark:border-slate-800" title="Facebook 連結">
+                                <i class="fa-brands fa-facebook-f text-lg"></i>
+                                <span>Facebook 粉絲專頁</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick stats badges -->
+                    <div class="grid grid-cols-3 gap-3 pt-6 max-w-lg mx-auto lg:mx-0 border-t border-slate-200 dark:border-slate-800">
+                        <div class="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/80 dark:border-slate-800 text-center">
+                            <div class="text-xl sm:text-2xl font-black text-brand-600 dark:text-brand-400">100%</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">個案關懷與陪伴</div>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/80 dark:border-slate-800 text-center">
+                            <div class="text-xl sm:text-2xl font-black text-accent-600 dark:text-accent-500">雙向</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">志工與後勤協作</div>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/80 dark:border-slate-800 text-center">
+                            <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">高彈性</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">跨部門危機處理</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Profile Photo & Floating Card -->
+                <div class="lg:col-span-5 flex justify-center relative">
+                    <div class="relative w-72 sm:w-80 md:w-96 aspect-square">
+                        <!-- Decorative blob background -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-400 to-accent-500 opacity-25 dark:opacity-30 blob-shape filter blur-lg transform scale-105"></div>
+                        
+                        <!-- Photo container with ring and shadow -->
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 bg-slate-200 dark:bg-slate-900 float-animation">
+                            <img src="https://img.ai365.fans/artworks/6556d8f6-52f8-4721-858f-ceb37b40a9a2/96uabcw2xsn.png" alt="專業社工與管理人才大頭照" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x400/22c55e/ffffff?text=Social+Worker'">
+                        </div>
+
+                        <!-- Floating Badge 1 -->
+                        <div class="absolute -bottom-4 -left-4 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-brand-500/30">
+                                <i class="fa-solid fa-people-group"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 dark:text-slate-400 font-medium">團隊領導</p>
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100">志工培力與排班</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 2 -->
+                        <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-accent-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-accent-500/30">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 dark:text-slate-400 font-medium">後勤整合</p>
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100">廚房與供餐協調</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <!-- Section 1: About Summary -->
+        <section id="about" class="scroll-mt-28">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200/80 dark:border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
+                
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">核心專業摘要</h2>
+                </div>
+
+                <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed space-y-4">
+                    <p class="font-medium text-slate-800 dark:text-slate-100">
+                        您好，我具備豐富的一線社工與跨部門管理經驗。在過去的工作中，我不僅負責個案的深度評估與資源連結，更同時肩負管理志工團隊與協調廚房人員的任務。
+                    </p>
+                    <p>
+                        面對背景多元的服務對象與工作夥伴，我培養出極強的溝通協調能力與多工處理彈性，能確保機構的日常營運（如供餐服務與志工協作）順暢運作，並帶領團隊達成助人的核心目標。
+                    </p>
+                </div>
+
+                <!-- Highlight Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
+                        <div class="w-12 h-12 rounded-xl bg-brand-500 text-white flex items-center justify-center text-lg mb-4 shadow-md shadow-brand-500/20">
+                            <i class="fa-solid fa-clipboard-user"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">深度個案管理</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">獨立執行訪視與處遇評估，串聯內外部網絡陪伴服務對象走出低谷。</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
+                        <div class="w-12 h-12 rounded-xl bg-accent-500 text-white flex items-center justify-center text-lg mb-4 shadow-md shadow-accent-500/20">
+                            <i class="fa-solid fa-hands-holding"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">志工培力經營</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">主責招募、訓練與排班調度，凝聚向心力將民間力量化為穩定服務動能。</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg mb-4 shadow-md shadow-amber-500/20">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">後勤跨部門協調</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">作為服務與廚房供餐團隊橋樑，排解摩擦確保餐食品質與流程高效。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Bulleted Highlights -->
+        <section id="highlights" class="scroll-mt-28">
+            <div class="text-center max-w-2xl mx-auto mb-12 space-y-3">
+                <span class="px-3.5 py-1 rounded-full bg-accent-100 dark:bg-accent-950 text-accent-600 dark:text-accent-400 text-xs font-bold uppercase tracking-wider">履歷條列版</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">專業資歷與核心職能</h2>
+                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400">適合呈現於履歷「個人簡介」或重點自傳段落</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between hover:border-brand-500/50 transition-all group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">扎實的個案管理</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            獨立執行個案訪視、需求評估與處遇計畫擬定。擅長整合內外部網絡資源，陪伴並培力服務對象度過難關。
+                        </p>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-brand-600 dark:text-brand-400">
+                        <span>個案訪視與資源串聯</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between hover:border-accent-500/50 transition-all group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-accent-50 dark:bg-accent-950 text-accent-600 dark:text-accent-400 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">志工團隊經營與培力</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            主責志工招募、教育訓練、排班調度與督導。善於凝聚團隊向心力，激發志工潛能，將民間力量轉化為穩定的服務量能。
+                        </p>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-accent-600 dark:text-accent-400">
+                        <span>培力訓練與向心力凝聚</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between hover:border-amber-500/50 transition-all group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-bridge"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">跨部門溝通與後勤協調</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            長期擔任一線服務與後勤（如廚房供餐團隊）的溝通橋樑。具備危機處理能力，能有效調解跨部門摩擦，確保餐食服務品質與流程效率。
+                        </p>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-amber-600 dark:text-amber-400">
+                        <span>供餐後勤與衝突調解</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Narrative Autobiography -->
+        <section id="narrative" class="scroll-mt-28">
+            <div class="bg-gradient-to-br from-brand-900 via-slate-900 to-accent-950 rounded-3xl p-8 sm:p-14 text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full filter blur-3xl pointer-events-none"></div>
+                
+                <div class="max-w-3xl relative z-10 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur text-brand-300 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-book-open-reader"></i> 敘事自傳版
+                    </div>
+                    
+                    <h2 class="text-2xl sm:text-4xl font-black tracking-tight">
+                        在助人與營運之間，打造充滿溫度的服務網絡
+                    </h2>
+
+                    <div class="space-y-4 text-slate-300 text-base sm:text-lg leading-relaxed">
+                        <p>
+                            在我的社工職涯中，我的角色不僅是助人者，更是機構內的<strong class="text-white font-bold">「資源整合樞紐」</strong>。我的日常工作橫跨了三個截然不同的群體：需要高度同理與專業支持的個案、需要熱情與制度化管理的志工，以及講求務實與效率的廚房人員。
+                        </p>
+                        <p>
+                            這段經驗訓練我必須在不同角色間快速切換溝通語言。面對個案，我展現傾聽與同理；面對志工，我提供明確的指引與情感支持；面對廚房與後勤夥伴，我則專注於流程優化與務實的解決方案。
+                        </p>
+                        <p class="font-semibold text-brand-300">
+                            我深知如何將分散的資源與不同專長的人力整合在一起，建立一個高效且充滿溫度的服務網絡。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Ecosystem / Collaboration Hub -->
+        <section id="ecosystem" class="scroll-mt-28">
+            <div class="text-center max-w-2xl mx-auto mb-12 space-y-3">
+                <span class="px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">協作樞紐模型</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">三方群體協作核心</h2>
+                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400">橫跨個案、志工與後勤的高效溝通橋樑</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Node 1 -->
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 text-center space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-2xl font-black shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">服務對象（個案）</h3>
+                    <p class="text-xs text-brand-600 dark:text-brand-400 font-bold uppercase tracking-wider">傾聽與同理</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-300">深度訪視與需求評估，整合內外部網絡資源，陪伴度過難關。</p>
+                </div>
+
+                <!-- Node 2 -->
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 text-center space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-accent-100 dark:bg-accent-950 text-accent-600 dark:text-accent-400 flex items-center justify-center text-2xl font-black shadow-lg shadow-accent-500/20">
+                        <i class="fa-solid fa-people-carry-box"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">志工團隊</h3>
+                    <p class="text-xs text-accent-600 dark:text-accent-400 font-bold uppercase tracking-wider">指引與培力</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-300">招募訓練、排班調度與督導，凝聚向心力轉化為穩定服務量能。</p>
+                </div>
+
+                <!-- Node 3 -->
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 text-center space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">後勤廚房團隊</h3>
+                    <p class="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">流程與效率</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-300">供餐服務協調、衝突危機處理，確保日常營運與餐食品質順暢。</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-white py-12 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-hands-holding-child"></i>
+                </span>
+                <div>
+                    <p class="font-bold text-base">專業社工與跨部門管理人才</p>
+                    <p class="text-xs text-slate-400">Social Work & Operations Management Portfolio</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="https://www.facebook.com/?locale=zh_TW" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all text-xs font-semibold flex items-center gap-2 border border-slate-700" title="Facebook 連結">
+                    <i class="fa-brands fa-facebook-f text-blue-400"></i> Facebook 粉絲專頁
+                </a>
+            </div>
+
+            <p class="text-xs text-slate-500">
+                &copy; 2026 Professional Social Work & Management. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Music Player Toggle Logic
+        let isPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+        const musicWave = document.getElementById('musicWave');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                isPlaying = false;
+                musicIcon.className = 'fa-solid fa-volume-xmark';
+                musicText.textContent = '音樂關閉';
+                musicWave.classList.add('paused');
+                musicToggleBtn.classList.remove('border-brand-500', 'text-brand-600', 'dark:text-brand-400');
+            } else {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicIcon.className = 'fa-solid fa-volume-high';
+                    musicText.textContent = '音樂播放中';
+                    musicWave.classList.remove('paused');
+                    musicToggleBtn.classList.add('border-brand-500', 'text-brand-600', 'dark:text-brand-400');
+                }).catch(e => {
+                    console.log("Audio autoplay prevented or failed:", e);
+                });
+            }
+        }
+
+        // Dark / Light Theme Toggle Logic
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+
+        // Initialize theme based on local storage or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
