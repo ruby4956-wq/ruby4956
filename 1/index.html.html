@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基隆兩天一夜推薦路線地圖</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        // 海洋藍色系
+                        ocean: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7', // 主要深藍
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        // 夕陽橘色系
+                        sunset: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316', // 主要橘色
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-gray-900 text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased font-sans">
+
+    <!-- Navigation / Header -->
+    <header class="fixed w-full top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-ocean-100 dark:border-gray-800 shadow-sm transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-anchor text-ocean-600 dark:text-ocean-400 text-xl"></i>
+                    <span class="font-bold text-xl tracking-wide text-ocean-900 dark:text-white">基隆漫遊 <span class="text-sunset-500">Keelung</span></span>
+                </div>
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-full text-sm p-2.5 transition-colors duration-300">
+                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-ocean-800 via-ocean-600 to-ocean-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950">
+        <!-- Decorative Elements -->
+        <div class="absolute top-20 right-10 w-64 h-64 bg-sunset-500 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
+        <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-ocean-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+        
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-white backdrop-blur-sm text-sm font-semibold tracking-wider mb-4 border border-white/30 shadow-sm">
+                Travel Guide
+            </span>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-md">
+                基隆兩天一夜 <br class="md:hidden"/> 推薦路線地圖
+            </h1>
+            <p class="mt-4 text-xl md:text-2xl text-ocean-100 max-w-3xl mx-auto font-light drop-shadow">
+                從絕美海岸色彩到山海夜景，探訪歷史古蹟與隱密巷弄的老宅咖啡，感受最道地的港都風情。
+            </p>
+            <div class="mt-10">
+                <a href="#itinerary" class="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-ocean-900 bg-sunset-400 hover:bg-sunset-300 rounded-full transition-all duration-300 shadow-lg shadow-sunset-500/30 hover:-translate-y-1">
+                    開始探索行程 <i class="fa-solid fa-arrow-down ml-2"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Wave Divider (SVG) -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden line-height-0 transform rotate-180">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-12 md:h-20 drop-shadow-sm">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-slate-50 dark:fill-gray-900 transition-colors duration-300"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Itinerary Content -->
+    <main id="itinerary" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        
+        <!-- Day 1 Section -->
+        <div class="mb-20">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-ocean-100 dark:bg-ocean-900/50 text-ocean-600 dark:text-ocean-400 font-black text-2xl shadow-inner border border-ocean-200 dark:border-ocean-800">
+                    D1
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">港都人文歷史與絕美海景咖啡</h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-1">走讀老基隆光影、打卡彩色漁港、潮境公園看夜色與廟口美食。</p>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="relative border-l-4 border-ocean-200 dark:border-gray-700 ml-6 md:ml-8 space-y-12">
+                
+                <!-- Stop 1 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-sunset-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-mug-hot text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【時光膠囊】古基咖啡館</h3>
+                            <div class="flex gap-2">
+                                <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 10:30 - 12:00</span>
+                                <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-sm font-bold px-3 py-1 rounded-full flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.9</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>隱身在中山區山坡老宅，店內珍藏了已故攝影大師鄭桑溪鏡頭下七十年前的古老基隆記憶。在這裡一邊啜飲濃郁咖啡與起司蛋糕，一邊翻閱歷史光影，是認識港都最浪漫的起點。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-circle-info text-ocean-500 mr-2"></i>營運：</strong>週一、二、四、五 13:00-19:00，週六、日 10:00-16:00（週三公休）。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-bus text-green-500 mr-2"></i>交通：</strong>從基隆火車站北站步行約 5-8 分鐘即可抵達。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 2 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-sunset-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-camera text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【台版威尼斯】正濱漁港彩色屋與阿根納造船廠遺址</h3>
+                            <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 12:30 - 14:00</span>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>基隆最具代表性的彩色老漁港，對面的造船廠遺址則散發著廢墟工業風的滄桑美感（具歷史文化價值）。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-bus text-green-500 mr-2"></i>交通：</strong>從市區搭乘公車 101、103 或快捷公車 1579 至「正濱路口」或「中濱里站」，車程約 15 分鐘。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 3 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-sunset-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-cake-candles text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【工業風靈魂】萬祝號</h3>
+                            <div class="flex gap-2">
+                                <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 14:00 - 15:30</span>
+                                <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-sm font-bold px-3 py-1 rounded-full flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.7</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>由 50 年老鋼索釣具店改建的極致老宅咖啡！保留了老鐵櫃與船橋方向舵。必點「大人味提拉米蘇」（酒香濃郁）與「花生芝麻巴斯克蛋糕」（融和在地劉家花生醬）。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-circle-info text-ocean-500 mr-2"></i>營運：</strong>每日 11:00 - 18:30。內用低消一杯飲品，客滿限時 90 分鐘（不開放訂位、僅收現金）。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-person-walking text-green-500 mr-2"></i>交通：</strong>從彩色屋步行 4 分鐘即可抵達。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 4 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-sunset-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-water text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【依山傍海】潮境公園 & Cafejiasong咖央</h3>
+                            <div class="flex gap-2">
+                                <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 16:00 - 18:00</span>
+                                <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-sm font-bold px-3 py-1 rounded-full flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.8</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>傍晚在潮境公園散步、看巨大的飛天掃帚與基隆嶼。累了就到咖央咖啡廳，透過大片落地窗飽覽海天一色，入夜後還能遠眺對岸九份山城如銀河般傾洩的燈火。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-circle-info text-ocean-500 mr-2"></i>營運：</strong>週二至週日 10:30 - 18:00（週一公休）。每人低消 $250，限時 90 分鐘。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-bus text-green-500 mr-2"></i>交通：</strong>從正濱漁港搭乘公車 103 或 791 至「海科館/潮境公園」，再步行進入。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 5 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-sunset-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-bowl-food text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【國際肯定宵夜場】基隆廟口夜市</h3>
+                            <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 18:30 ~ </span>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>曾被《Tatler》評選為世界20大市集之一！必吃 22 號攤的現炸天婦羅（自 1946 年傳承至今）、營養三明治、螃蟹羹與鼎邊趖。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-circle-info text-ocean-500 mr-2"></i>營運提示：</strong>24小時輪流營業（多數熱門攤位營業至午夜）。全區僅收現金，建議開車者將車停在微風東岸停車場。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Day 2 Section -->
+        <div>
+            <div class="flex items-center gap-4 mb-10 mt-16">
+                <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-sunset-100 dark:bg-sunset-900/50 text-sunset-600 dark:text-sunset-400 font-black text-2xl shadow-inner border border-sunset-200 dark:border-sunset-800">
+                    D2
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">山海砲台文化遺產與市區隱密老宅</h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-1">登上獅球嶺鳥瞰基隆港、探訪清代隧道，午後巷弄甜點時光。</p>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="relative border-l-4 border-sunset-300 dark:border-gray-700 ml-6 md:ml-8 space-y-12">
+                
+                <!-- Stop 1 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-ocean-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-brands fa-fort-awesome text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【清代文化雙遺產】獅球嶺砲台與劉銘傳隧道</h3>
+                            <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 10:00 - 12:00</span>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>獅球嶺砲台是基隆港防區位置最高、最內陸的砲台，站在這裡能以絕佳的視角俯瞰整個基隆港口、基隆嶼以及繁忙的國道一號起點。隨後順遊下方的「劉銘傳隧道」（市定古蹟），這是 130 多年前清朝建造的全台第一座火車隧道，充滿歷史厚重感。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-bus text-green-500 mr-2"></i>交通：</strong>從基隆火車站搭乘計程車（約 10 分鐘）或搭公車至獅球路附近步行上山。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 2 -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-ocean-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-leaf text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【山中避風港】隱山所</h3>
+                            <div class="flex gap-2">
+                                <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 12:00 - 14:00</span>
+                                <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-sm font-bold px-3 py-1 rounded-full flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.8</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-sparkles text-sunset-500 mr-2"></i>亮點：</strong>隱身在獅球嶺山區極為僻靜的祕境咖啡廳。環境清幽、草木環繞，非常適合剛爬完砲台後在這裡吹冷氣、喝手沖咖啡、品嚐細緻的甜點，享受遠離市區喧囂的安靜午後。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-circle-info text-ocean-500 mr-2"></i>營運：</strong>週五至週一 12:00 - 19:00，週二、三 11:30 - 19:30（週四公休）。僅收現金。</p>
+                            <p><strong class="text-gray-900 dark:text-gray-100"><i class="fa-solid fa-person-walking text-green-500 mr-2"></i>交通：</strong>緊鄰獅球嶺砲台步道旁，步行即可順遊。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop 3 (Split Choice) -->
+                <div class="relative ml-8 md:ml-12 group">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-ocean-500 rounded-full -left-[42px] md:-left-[58px] ring-4 ring-slate-50 dark:ring-gray-900 transition-transform group-hover:scale-110 duration-300">
+                        <i class="fa-solid fa-store text-white text-sm"></i>
+                    </span>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b border-gray-100 dark:border-gray-700 pb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-ocean-800 dark:text-ocean-300">【市區巷弄壓軸】（二選一，皆近廟口）</h3>
+                            <span class="bg-sunset-100 text-sunset-700 dark:bg-sunset-900/40 dark:text-sunset-400 text-sm font-bold px-3 py-1 rounded-full"><i class="fa-regular fa-clock mr-1"></i> 14:30 - 16:30</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <!-- Choice A -->
+                            <div class="bg-slate-50 dark:bg-gray-900/50 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-bold text-sunset-600 dark:text-sunset-400">選項 A：安樓咖啡</h4>
+                                    <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold px-2 py-1 rounded flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.5</span>
+                                </div>
+                                <p class="text-sm font-semibold text-ocean-700 dark:text-ocean-300 mb-2">浪漫復古老屋風</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">五層樓的老透天改建，外牆有著美麗的復古花磚。店內最特別的是點餐後餐點會坐「復古小電梯」送上樓！推薦蘋果美式咖啡，風味微酸清甜。</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500"><i class="fa-solid fa-clock mr-1"></i>每日 10:00 - 19:00</p>
+                            </div>
+                            
+                            <!-- Choice B -->
+                            <div class="bg-slate-50 dark:bg-gray-900/50 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-bold text-sunset-600 dark:text-sunset-400">選項 B：三奇壹號咖啡館</h4>
+                                    <span class="bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold px-2 py-1 rounded flex items-center"><i class="fa-solid fa-star mr-1"></i> 4.5</span>
+                                </div>
+                                <p class="text-sm font-semibold text-ocean-700 dark:text-ocean-300 mb-2">極致千層蛋糕控</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">隱密窄巷內的超級排隊名店，由報關行老東家改建，充滿港口貨櫃與海洋元素。他們家的「千層蛋糕」在基隆赫赫有名，還有在地特色的「鹹蛋黃鳳梨千層」！</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500"><i class="fa-solid fa-clock mr-1"></i>每日 12:00 - 19:30 (假日18:00後僅供外帶)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-10 pb-6 text-center transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4">
+            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                &copy; 2026 基隆兩天一夜推薦路線. Designed with <i class="fa-solid fa-heart text-sunset-500 mx-1"></i> for travelers.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Initial check to display corresponding icon
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        // Listen for toggle button click
+        themeToggleBtn.addEventListener('click', function() {
+            // Toggle icons
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // If is set in localStorage
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            // If NOT set in localStorage
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

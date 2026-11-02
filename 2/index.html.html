@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- Chosen Palette: Warm Soft Pastel (Day 1 Coral Orange #FF8C42, Day 2 Gentle Purple #9C88FF, Harbour Blue #54A0FF, Soft Cream Background #FFFBF5) -->
+    <!-- Application Structure Plan: The SPA is structured into 6 thematic interactive modules: 1) Interactive Header & Day Selector, 2) Interactive Map View (Leaflet with custom map pins), 3) Detailed Day-by-Day Route Timeline with Option A/B interactive toggle and rich spot photography, 4) Visual Data Analytics (Chart.js time allocation and ratings breakdown), 5) Interactive Trip Toolkit (Cafe Selector Quiz, Packing & Tips Checklist, Weather/Rainy-day Toggle), and 6) Local Transport & Practical Advice section. This non-linear, task-oriented design allows users to easily plan, explore, and visualize their trip. -->
+    <!-- Visualization & Content Choices:
+    - Spots & Locations -> Interactive Map -> Leaflet Canvas Map Pins -> Click to view popup / scroll to card -> High spatial clarity.
+    - Spot Photography -> Unsplash High-res Images -> HTML img tags with lazy loading & rounded cards -> Visual engagement and realism.
+    - Spot Ratings & Categories -> Bar / Donut Charts -> Chart.js (Canvas) -> Hover tooltips, interactive dataset filter -> Clear comparative insights.
+    - Day 2 Afternoon Option A vs B -> Interactive Toggle & Comparison Card -> Pure JS DOM update -> Gives users active choices.
+    - Cafe Recommendation -> Interactive Quiz Modal -> JS state logic -> Personalizes exploration.
+    - Rain Plan Switcher -> Dynamic Content Toggle -> Pure JS -> Solves Keelung rainy weather pain point.
+    Confirming NO SVG graphics and NO Mermaid JS are used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ 基隆兩天一夜可愛休閒指南 🌊☕️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FFFBF5',
+                        day1: '#FF8C42',
+                        day1light: '#FFEBDD',
+                        day2: '#9C88FF',
+                        day2light: '#F0ECFF',
+                        ocean: '#48DBFB',
+                        oceanDark: '#2E86DE',
+                        ink: '#2D3436',
+                        softGray: '#F7F9FA'
+                    },
+                    fontFamily: {
+                        sans: ['Zen Maru Gothic', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            background-color: #FFFBF5;
+            color: #2D3436;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 340px;
+            }
+        }
+        
+        .leaflet-popup-content-wrapper {
+            border-radius: 1.5rem !important;
+            padding: 0.5rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+            font-family: 'Zen Maru Gothic', sans-serif !important;
+            border: 2px solid #FFEBDD;
+        }
+        .leaflet-popup-tip {
+            background-color: white !important;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFBF5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD8BE;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF8C42;
+        }
+
+        .bouncy {
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bouncy:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-200">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-orange-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🗺️</span>
+                <div>
+                    <h1 class="text-xl font-black text-slate-800 tracking-wide">基隆兩天一夜推薦路線</h1>
+                    <p class="text-xs text-orange-500 font-bold">山海夜景 ‧ 百年古蹟 ‧ 秘境咖啡</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex space-x-2">
+                <button onclick="scrollToSection('map-section')" class="px-3 py-1.5 rounded-full text-sm font-bold bg-orange-100 text-orange-600 hover:bg-orange-200 transition">📍 路線地圖</button>
+                <button onclick="scrollToSection('day1-section')" class="px-3 py-1.5 rounded-full text-sm font-bold bg-amber-100 text-amber-700 hover:bg-amber-200 transition">🌅 Day 1 漫遊</button>
+                <button onclick="scrollToSection('day2-section')" class="px-3 py-1.5 rounded-full text-sm font-bold bg-purple-100 text-purple-700 hover:bg-purple-200 transition">🏛️ Day 2 探索</button>
+                <button onclick="scrollToSection('toolkit-section')" class="px-3 py-1.5 rounded-full text-sm font-bold bg-sky-100 text-sky-700 hover:bg-sky-200 transition">🧰 隨行百寶箱</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+        <section class="bg-gradient-to-r from-amber-100 via-orange-100 to-purple-100 rounded-4xl p-6 md:p-10 shadow-sm border-2 border-white relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-block px-3 py-1 bg-white text-orange-600 rounded-full text-xs font-black mb-3 shadow-xs">
+                    ✨ 可愛休閒風格 ‧ 港都小旅行指南
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4">
+                    走讀老基隆光影，<br class="hidden sm:inline">吹海風喝咖啡看九份夜色 ✨
+                </h2>
+                <p class="text-slate-600 font-medium text-base md:text-lg mb-6">
+                    本指南為您結構化整理基隆 2 天 1 夜經典景點與秘境！涵蓋威尼斯彩色屋、百年古蹟鐵路隧道、高分質感咖啡館與國際級廟口夜市美食。
+                </p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="bg-white/80 backdrop-blur p-3 rounded-2xl text-center border border-white">
+                        <span class="block text-xs text-slate-500 font-bold">總玩樂時長</span>
+                        <span class="text-lg font-black text-orange-500">2 天 1 夜</span>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-3 rounded-2xl text-center border border-white">
+                        <span class="block text-xs text-slate-500 font-bold">精選景點數</span>
+                        <span class="text-lg font-black text-purple-600">8 大亮點</span>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-3 rounded-2xl text-center border border-white">
+                        <span class="block text-xs text-slate-500 font-bold">咖啡廳評分</span>
+                        <span class="text-lg font-black text-amber-500">⭐️ 4.7+</span>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur p-3 rounded-2xl text-center border border-white">
+                        <span class="block text-xs text-slate-500 font-bold">移動便利性</span>
+                        <span class="text-lg font-black text-sky-500">公車/步行可達</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white border-2 border-sky-100 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-sky-100 text-sky-500 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                    🌧️
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg">基隆多雨天氣提示 & 雨天備案</h3>
+                    <p class="text-xs md:text-sm text-slate-500">如果遇上下雨天，別擔心！點擊右側按鈕切換戶外與室內替代建議。</p>
+                </div>
+            </div>
+            <button id="rain-toggle-btn" onclick="toggleRainPlan()" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-black rounded-full text-sm shadow-md hover:shadow-lg transition flex items-center space-x-2 whitespace-nowrap">
+                <span>切換為「雨天備案模式」</span>
+                <span>☔️</span>
+            </button>
+        </section>
+
+        <section id="map-section" class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-orange-500">GEOGRAPHIC GUIDE</span>
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-800">🗺️ 兩日遊地理空間地圖</h2>
+                    <p class="text-sm text-slate-500">橘色為 Day 1 景點，紫色為 Day 2 景點，藍色為地理參考中心（基隆車站/港區）。點擊標記可查看簡介與評價！</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="filterMapMarkers('all')" class="px-3 py-1 rounded-full text-xs font-bold border border-slate-200 bg-white hover:bg-slate-100">全部顯示</button>
+                    <button onclick="filterMapMarkers(1)" class="px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-600 border border-orange-200">Day 1 海岸</button>
+                    <button onclick="filterMapMarkers(2)" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-600 border border-purple-200">Day 2 歷史</button>
+                </div>
+            </div>
+
+            <div class="bg-white p-3 rounded-4xl border-2 border-orange-100 shadow-sm">
+                <div id="keelung-map" class="w-full h-[420px] rounded-3xl z-10"></div>
+            </div>
+        </section>
+
+        <section id="day1-section" class="space-y-6">
+            <div class="border-l-8 border-orange-400 pl-4 py-1">
+                <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-black uppercase">DAY 1 ITINERARY</span>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mt-1">海岸色彩與山海夜景 🌊🌇</h2>
+                <p class="text-sm text-slate-500">走讀老基隆光影、打卡網美彩色漁港、潮境公園看九份夜色，最後用夜市美食填滿胃！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Spot 1 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-orange-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80" alt="古基咖啡館" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-extrabold">10:30 - 12:00</span>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">⭐️ 4.9 高分</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【時光膠囊】古基咖啡館</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                隱身在中山區山坡老宅，店內珍藏已故攝影大師鄭桑溪鏡頭下七十年前的古老基隆記憶。一邊啜飲濃郁咖啡與起司蛋糕，一邊翻閱歷史光影。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🕒</span>
+                            <span>週一二四五 13-19，六日 10-16（週三公休）</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚶</span>
+                            <span>基隆火車站北站步行約 5-8 分鐘即可抵達</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spot 2 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-orange-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80" alt="正濱漁港彩色屋" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-extrabold">12:30 - 14:00</span>
+                                <span class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">📸 網美打卡必訪</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【台版威尼斯】正濱漁港彩色屋 & 阿根納造船廠</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                基隆最具代表性的彩色老漁港，亮麗繽紛！對面的阿根納造船廠遺址則散發著廢墟工業風的滄桑美感與歷史文化價值。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚌</span>
+                            <span>市區搭公車 101、103 或 1579 至「正濱路口」(~15分)</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">💡</span>
+                            <span>周邊必吃傳統手工炭烤「吉古拉」</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spot 3 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-orange-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80" alt="萬祝號" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-extrabold">14:00 - 15:30</span>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">⭐️ 4.7 老宅咖啡</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【工業風靈魂】萬祝號</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                由 50 年老鋼索釣具店改建的極致老宅咖啡！保留了老鐵櫃與船橋方向舵。必點「大人味提拉米蘇」（酒香濃郁）與「花生芝麻巴斯克蛋糕」。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🕒</span>
+                            <span>每日 11:00 - 18:30（低消飲品、客滿限 90 分）</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚶</span>
+                            <span>從正濱漁港彩色屋步行約 4 分鐘即可抵達</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spot 4 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-orange-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" alt="潮境公園" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-extrabold">16:00 - 18:00</span>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">⭐️ 4.8 絕美海景</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【依山傍海】潮境公園 & 咖央 潮境店</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                傍晚散步看巨大飛天掃帚與基隆嶼。累了就到 Cafejiasong 咖央，透過大片落地窗飽覽海天一色，入夜後遠眺對岸九份山城銀河般燈火。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🕒</span>
+                            <span>週二至週日 10:30 - 18:00（週一公休，低消 $250）</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚌</span>
+                            <span>正濱漁港搭 103 或 791 至「海科館/潮境公園」</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spot 5 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-orange-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between md:col-span-2 lg:col-span-2 overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" alt="基隆廟口夜市" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-extrabold">18:30~ 宵夜場</span>
+                                <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md">🏆 Tatler評選世界20大市集</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【國際肯定宵夜場】基隆廟口夜市</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                基隆夜間美食心臟！必吃 22 號攤現炸天婦羅（自 1946 年傳承至今）、營養三明治、螃蟹羹與鼎邊趖。無數攤位滿足宵夜靈魂。
+                            </p>
+
+                            <div class="flex flex-wrap gap-2 pt-1">
+                                <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold">🍤 22號天婦羅 (傳承1946)</span>
+                                <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold">🥖 營養三明治</span>
+                                <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold">🦀 螃蟹羹</span>
+                                <span class="px-2.5 py-1 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold">🍲 鼎邊趖</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center text-xs text-slate-600 gap-2">
+                        <div>💡 24小時輪流營業（熱門攤位至午夜）｜ 全區僅收現金</div>
+                        <div class="text-orange-600 font-bold">🅿️ 建議停車：微風東岸地下停車場</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="day2-section" class="space-y-6">
+            <div class="border-l-8 border-purple-400 pl-4 py-1">
+                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-black uppercase">DAY 2 ITINERARY</span>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mt-1">歷史古蹟與山海秘境咖啡 🏛️☕️</h2>
+                <p class="text-sm text-slate-500">登上獅球嶺鳥瞰基隆港全景、探訪清代劉銘傳鐵路隧道，最後回到市區巷弄享受午後甜點！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Day 2 Spot 1 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-purple-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="獅球嶺砲台與劉銘傳隧道" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-extrabold">10:00 - 12:00</span>
+                                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md">🏛️ 市定古蹟文化遺產</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【清代文化雙遺產】獅球嶺砲台 & 劉銘傳隧道</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                獅球嶺砲台是基隆港防區最高、最內陸的砲台，能俯瞰基隆港口與國道一號起點！順遊下方的「劉銘傳隧道」，為 130 多年前清朝建造的全台第一座火車隧道。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚕</span>
+                            <span>基隆火車站搭計程車約 10 分鐘，或搭公車至獅球路步行上山</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 Spot 2 -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-purple-100 shadow-sm hover:shadow-md bouncy flex flex-col justify-between overflow-hidden">
+                    <div>
+                        <div class="overflow-hidden rounded-2xl mb-3 h-40 border border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80" alt="隱山所" class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-extrabold">12:00 - 14:00</span>
+                                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md">⭐️ 4.8 秘境老宅</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【山中避風港】隱山所</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                隱身在獅球嶺山區極為僻靜的祕境咖啡廳。環境清幽、草木環繞，非常適合剛爬完砲台後吹冷氣、喝手沖咖啡，享受遠離市區喧囂的安靜午後。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🕒</span>
+                            <span>五至一 12-19，二三 11:30-19:30（週四公休，僅收現金）</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🚶</span>
+                            <span>緊鄰獅球嶺砲台步道旁，步行即可順遊</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 Afternoon Interactive Option Chooser -->
+                <div class="bg-white rounded-3xl p-5 border-2 border-purple-200 shadow-sm flex flex-col justify-between md:col-span-2 lg:col-span-1 overflow-hidden">
+                    <div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-extrabold">14:30 - 16:30</span>
+                                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md">💡 市區二選一</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800">【市區巷弄壓軸】選擇偏好的午後咖啡</h3>
+                            
+                            <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
+                                <button id="btn-opt-a" onclick="switchDay2Option('A')" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-white text-purple-700 shadow-xs transition">選項 A: 安樓咖啡</button>
+                                <button id="btn-opt-b" onclick="switchDay2Option('B')" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-purple-700 transition">選項 B: 三奇壹號</button>
+                            </div>
+
+                            <div id="content-opt-a" class="space-y-2">
+                                <div class="overflow-hidden rounded-2xl h-36 border border-slate-100 my-2">
+                                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80" alt="安樓咖啡" class="w-full h-full object-cover" loading="lazy">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm text-slate-800">☕️ 浪漫復古老屋風 ── 安樓咖啡</span>
+                                    <span class="text-xs font-bold text-amber-500">⭐️ 4.5</span>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    五層樓的老透天改建，外牆有著美麗的復古花磚。點餐後餐點會坐「復古小電梯」送上樓！推薦蘋果美式咖啡，風味微酸清甜。
+                                </p>
+                                <div class="text-xs text-purple-600 font-bold">🕒 每日 10:00 - 19:00</div>
+                            </div>
+
+                            <div id="content-opt-b" class="space-y-2 hidden">
+                                <div class="overflow-hidden rounded-2xl h-36 border border-slate-100 my-2">
+                                    <img src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80" alt="三奇壹號咖啡館" class="w-full h-full object-cover" loading="lazy">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm text-slate-800">🍰 極致千層蛋糕控 ── 三奇壹號咖啡館</span>
+                                    <span class="text-xs font-bold text-amber-500">⭐️ 4.5</span>
+                                </div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    隱密窄巷內的超級排隊名店，由報關行老東家改建，充滿港口貨櫃與海洋元素。千層蛋糕赫赫有名，必嚐在地特色「鹹蛋黃鳳梨千層」！
+                                </p>
+                                <div class="text-xs text-purple-600 font-bold">🕒 每日 12:00 - 19:30（假日 18:00 後僅供外帶）</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
+                        📍 兩家皆位於基隆廟口周邊巷弄，方便結束後搭車或逛街。
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="border-l-8 border-sky-400 pl-4 py-1">
+                <span class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-xs font-black uppercase">DATA & VISUALIZATION</span>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mt-1">📊 行程數據與風格分析</h2>
+                <p class="text-sm text-slate-500">透過數據視角，快速了解行程的時間分配與高評分景點分散狀況。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl border-2 border-sky-100 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-base mb-1 text-center">⏱️ 行程時間類型占比 (兩日綜合)</h3>
+                    <p class="text-xs text-slate-400 text-center mb-4">自然海景、歷史古蹟與老宅咖啡的最佳平衡</p>
+                    <div class="chart-container">
+                        <canvas id="chart-time-allocation"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border-2 border-sky-100 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-base mb-1 text-center">☕️ 精選景點與咖啡館 Google 評價對比</h3>
+                    <p class="text-xs text-slate-400 text-center mb-4">平均 4.7 顆星以上的超高質感口袋名單</p>
+                    <div class="chart-container">
+                        <canvas id="chart-spot-ratings"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="toolkit-section" class="space-y-6">
+            <div class="border-l-8 border-amber-400 pl-4 py-1">
+                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-black uppercase">TRAVEL TOOLKIT</span>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mt-1">🧰 隨行互動百寶箱</h2>
+                <p class="text-sm text-slate-500">玩個小測驗選咖啡廳，或者檢查行前打包與實用交通叮嚀！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-3xl border-2 border-orange-200 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">🔮</span>
+                            <h3 class="font-black text-slate-800 text-lg">今日咖啡廳靈魂測驗</h3>
+                        </div>
+                        <p class="text-xs text-slate-600">不確定去哪家咖啡館？回答一個簡單問題，讓靈感幫你決定：</p>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-slate-700">你現在最渴望什麼氛圍？</label>
+                            <select id="quiz-vibe-select" class="w-full bg-white border border-orange-200 rounded-xl p-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <option value="photo">📜 翻閱老照片與幽靜老宅歷史 (古基咖啡館)</option>
+                                <option value="retro">⚓️ 50年老鋼索釣具店工業風 (萬祝號)</option>
+                                <option value="ocean">🌊 窗外就是一片大海與飛天掃帚 (咖央 潮境店)</option>
+                                <option value="mountain">🌿 躲在深山裡吹冷氣安靜喝手沖 (隱山所)</option>
+                                <option value="elevator">🛗 會坐復古小電梯上樓的美式咖啡 (安樓咖啡)</option>
+                                <option value="crepe">🍰 限時極致美味鹹蛋黃鳳梨千層 (三奇壹號)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="runCafeQuiz()" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-black rounded-xl text-xs shadow transition">
+                            查看我的推薦咖啡館 ✨
+                        </button>
+                    </div>
+
+                    <div id="quiz-result" class="mt-4 p-3 bg-white/80 rounded-2xl border border-orange-100 hidden">
+                        <div id="quiz-result-title" class="font-black text-xs text-orange-600"></div>
+                        <div id="quiz-result-desc" class="text-xs text-slate-600 mt-1"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">🎒</span>
+                        <h3 class="font-black text-slate-800 text-lg">出發基隆！實用清單 Check!</h3>
+                    </div>
+                    
+                    <div class="space-y-2 text-xs">
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" checked class="w-4 h-4 text-orange-500 rounded focus:ring-orange-400">
+                            <span class="font-bold text-slate-700">準備足夠現金 💵（萬祝號、隱山所、廟口夜市僅收現金）</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" checked class="w-4 h-4 text-orange-500 rounded focus:ring-orange-400">
+                            <span class="font-bold text-slate-700">攜帶摺疊雨傘/雨衣 ☔️（雨都基隆隨時可能飄小雨）</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" class="w-4 h-4 text-orange-500 rounded focus:ring-orange-400">
+                            <span class="font-bold text-slate-700">開車族確認：微風東岸地下停車場（便利且靠近廟口）</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" class="w-4 h-4 text-orange-500 rounded focus:ring-orange-400">
+                            <span class="font-bold text-slate-700">大眾運輸族：準備悠遊卡/一卡通搭乘 101/103/1579 公車</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div id="rain-plan-box" class="hidden bg-sky-50 border-2 border-sky-200 p-6 rounded-3xl space-y-3">
+            <h3 class="font-black text-sky-800 text-lg flex items-center space-x-2">
+                <span>☔️ 雨天備案行程清單（室內首選）</span>
+            </h3>
+            <p class="text-xs text-sky-700">若戶外（如潮境公園飛天掃帚、獅球嶺步道）因降雨不便，建議替換為以下室內美景與場館：</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div class="bg-white p-3 rounded-2xl border border-sky-100 text-xs">
+                    <span class="font-bold text-sky-800 block">🏛️ 國立海洋科技博物館</span>
+                    <span class="text-slate-500">位於八斗子，擁有豐富室內互動展覽與 3D 劇場。</span>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-sky-100 text-xs">
+                    <span class="font-bold text-sky-800 block">🐠 潮境智能海洋館 (i-OCEAN)</span>
+                    <span class="text-slate-500">結合沉浸式海底體驗與水族景觀，全室內舒適觀景。</span>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-sky-100 text-xs">
+                    <span class="font-bold text-sky-800 block">🚢 陽明海洋文化藝術館</span>
+                    <span class="text-slate-500">位於基隆火車站旁，適合雨天了解貨櫃港都人文史。</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-orange-100 bg-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-3">
+            <div class="text-2xl">⚓️ 🌊 ☕️</div>
+            <p class="text-xs text-slate-500 font-bold">
+                基隆兩天一夜推薦路線 ‧ 可愛休閒旅遊指南
+            </p>
+            <p class="text-[11px] text-slate-400">
+                本網頁為單頁式互動指南，整合路線、地圖、數據圖表與個人化咖啡推薦。祝您旅途愉快！
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let map;
+        let markers = [];
+
+        const spotsData = [
+            { id: 1, day: 1, name: "古基咖啡館", lat: 25.1345, lng: 121.7375, rating: "⭐️ 4.9", category: "老宅咖啡", desc: "隱身山坡老宅，珍藏已故攝影大師鄭桑溪70年前基隆老照片。" },
+            { id: 2, day: 1, name: "正濱漁港彩色屋 & 阿根納造船廠", lat: 25.1528, lng: 121.7686, rating: "📸 必訪", category: "熱門景點", desc: "台版威尼斯彩色漁港與工業風廢墟造船廠。" },
+            { id: 3, day: 1, name: "萬祝號", lat: 25.1505, lng: 121.7645, rating: "⭐️ 4.7", category: "老宅咖啡", desc: "50年老鋼索釣具店改建！大人味提拉米蘇與巴斯克。" },
+            { id: 4, day: 1, name: "潮境公園 & 咖央", lat: 25.1430, lng: 121.8025, rating: "⭐️ 4.8", category: "海景咖啡", desc: "飛天掃帚、基隆嶼海景與對岸九份夜色。" },
+            { id: 5, day: 1, name: "基隆廟口夜市", lat: 25.1283, lng: 121.7432, rating: "🏆 世界級", category: "夜市美食", desc: "22號天婦羅、營養三明治、鼎邊趖與螃蟹羹。" },
+            { id: 6, day: 2, name: "獅球嶺砲台 & 劉銘傳隧道", lat: 25.1205, lng: 121.7335, rating: "🏛️ 市定古蹟", category: "歷史遺產", desc: "俯瞰基隆港最高視角，全台第一座清代鐵路隧道。" },
+            { id: 7, day: 2, name: "隱山所", lat: 25.1188, lng: 121.7348, rating: "⭐️ 4.8", category: "秘境咖啡", desc: "深山安靜老宅，遠離喧囂的午後手沖咖啡。" },
+            { id: 8, day: 2, name: "安樓咖啡 (Option A)", lat: 25.1292, lng: 121.7415, rating: "⭐️ 4.5", category: "老屋咖啡", desc: "花磚老透天，餐點坐復古小電梯上樓！" },
+            { id: 9, day: 2, name: "三奇壹號咖啡館 (Option B)", lat: 25.1287, lng: 121.7420, rating: "⭐️ 4.5", category: "千層名店", desc: "報關行改建，招牌鹹蛋黃鳳梨千層蛋糕。" }
+        ];
+
+        function initMap() {
+            map = L.map('keelung-map').setView([25.1380, 121.7520], 13);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            renderMarkers('all');
+        }
+
+        function createCustomHtmlPin(day, category) {
+            const color = day === 1 ? '#FF8C42' : (day === 2 ? '#9C88FF' : '#48DBFB');
+            return `<div style="background-color: ${color}; width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.25); display: flex; items-center; justify-center; color: white; font-size: 12px; font-weight: bold;">
+                ${day === 1 ? '1' : '2'}
+            </div>`;
+        }
+
+        function renderMarkers(filter) {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            spotsData.forEach(spot => {
+                if (filter === 'all' || spot.day === filter) {
+                    const customIcon = L.divIcon({
+                        className: 'custom-pin',
+                        html: createCustomHtmlPin(spot.day, spot.category),
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                        popupAnchor: [0, -14]
+                    });
+
+                    const marker = L.marker([spot.lat, spot.lng], { icon: customIcon }).addTo(map);
+                    
+                    const popupContent = `
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-black text-sm text-slate-800">${spot.name}</span>
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${spot.day === 1 ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}">Day ${spot.day}</span>
+                            </div>
+                            <div class="text-xs text-amber-500 font-bold">${spot.rating}</div>
+                            <p class="text-xs text-slate-600 leading-tight">${spot.desc}</p>
+                        </div>
+                    `;
+
+                    marker.bindPopup(popupContent);
+                    markers.push(marker);
+                }
+            });
+        }
+
+        function filterMapMarkers(day) {
+            renderMarkers(day);
+        }
+
+        function switchDay2Option(option) {
+            const btnA = document.getElementById('btn-opt-a');
+            const btnB = document.getElementById('btn-opt-b');
+            const contentA = document.getElementById('content-opt-a');
+            const contentB = document.getElementById('content-opt-b');
+
+            if (option === 'A') {
+                btnA.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white text-purple-700 shadow-xs transition";
+                btnB.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-purple-700 transition";
+                contentA.classList.remove('hidden');
+                contentB.classList.add('hidden');
+            } else {
+                btnB.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white text-purple-700 shadow-xs transition";
+                btnA.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-purple-700 transition";
+                contentB.classList.remove('hidden');
+                contentA.classList.add('hidden');
+            }
+        }
+
+        function toggleRainPlan() {
+            const rainBox = document.getElementById('rain-plan-box');
+            const btn = document.getElementById('rain-toggle-btn');
+            
+            if (rainBox.classList.contains('hidden')) {
+                rainBox.classList.remove('hidden');
+                btn.innerHTML = '<span>已開啟雨天備案</span> ☀️';
+                btn.className = "px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-full text-sm shadow-md hover:shadow-lg transition flex items-center space-x-2 whitespace-nowrap";
+                rainBox.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                rainBox.classList.add('hidden');
+                btn.innerHTML = '<span>切換為「雨天備案模式」</span> ☔️';
+                btn.className = "px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-black rounded-full text-sm shadow-md hover:shadow-lg transition flex items-center space-x-2 whitespace-nowrap";
+            }
+        }
+
+        const cafeQuizData = {
+            photo: { title: "📜 古基咖啡館 (⭐️ 4.9)", desc: "最適合喜歡老照片、人文歷史光影與安靜起司蛋糕的你！位於車站北站山坡。" },
+            retro: { title: "⚓️ 萬祝號 (⭐️ 4.7)", desc: "推薦你這家 50 年老鋼索店改建的工業風老宅！別忘了點酒香提拉米蘇！" },
+            ocean: { title: "🌊 Cafejiasong 咖央 潮境店 (⭐️ 4.8)", desc: "大片落地窗看海看基隆嶼，傍晚還能遠眺九份銀河山城夜景！" },
+            mountain: { title: "🌿 隱山所 (⭐️ 4.8)", desc: "隱身獅球嶺砲台山區秘境，草木環繞，爬完山吹冷氣喝手沖的最佳避風港。" },
+            elevator: { title: "🛗 安樓咖啡 (⭐️ 4.5)", desc: "五層樓花磚透天厝，餐點用復古小電梯送到桌前，推薦嘗試蘋果美式！" },
+            crepe: { title: "🍰 三奇壹號咖啡館 (⭐️ 4.5)", desc: "報關行改建貨櫃海洋風，招牌「鹹蛋黃鳳梨千層蛋糕」千層控絕對不能錯過！" }
+        };
+
+        function runCafeQuiz() {
+            const val = document.getElementById('quiz-vibe-select').value;
+            const resBox = document.getElementById('quiz-result');
+            const resTitle = document.getElementById('quiz-result-title');
+            const resDesc = document.getElementById('quiz-result-desc');
+
+            const result = cafeQuizData[val];
+            if (result) {
+                resTitle.innerText = `💡 你的專屬推薦：${result.title}`;
+                resDesc.innerText = result.desc;
+                resBox.classList.remove('hidden');
+            }
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function initCharts() {
+            const ctx1 = document.getElementById('chart-time-allocation').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['老宅與海景咖啡館 ☕️', '海岸與自然景觀 🌊', '歷史古蹟走讀 🏛️', '廟口夜市美食 🍧'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: ['#FF8C42', '#48DBFB', '#9C88FF', '#FF6B6B'],
+                        borderWidth: 3,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Zen Maru Gothic', size: 12, weight: 'bold' },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: 約 ${context.raw}% 的行程體驗`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('chart-spot-ratings').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['古基咖啡', '萬祝號', '咖央潮境', '隱山所', '安樓咖啡', '三奇壹號'],
+                    datasets: [{
+                        label: 'Google 評分 (滿分 5.0)',
+                        data: [4.9, 4.7, 4.8, 4.8, 4.5, 4.5],
+                        backgroundColor: [
+                            '#FF8C42', '#FF8C42', '#FF8C42', 
+                            '#9C88FF', '#9C88FF', '#9C88FF'
+                        ],
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 4.0,
+                            max: 5.0,
+                            ticks: { stepSize: 0.2 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` 評分: ⭐️ ${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            initCharts();
+        });
+    </script>
+</body>
+</html>
